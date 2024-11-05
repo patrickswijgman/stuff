@@ -9,40 +9,38 @@ import {
 } from "fs-extra";
 import { marked } from "marked";
 
-const CWD = "notes";
+const MARKDOWN_FILES_DIR = "notes";
+const OUT_DIR = "dist";
 
 emptyDirSync("dist");
 
-const files = globbySync("**/*", { cwd: CWD }).sort();
+const indexHtml = readFileSync("app/index.html", "utf8");
+const markdownFiles = globbySync("**/*.md", { cwd: MARKDOWN_FILES_DIR }).sort();
 
-for (const file of files) {
-  const content = readFileSync(`${CWD}/${file}`, "utf8");
-  const body = marked(content, { async: false });
+for (const file of markdownFiles) {
+  const content = readFileSync(`${MARKDOWN_FILES_DIR}/${file}`, "utf8");
+
   const title = file.replace(".md", "");
-  const nav = files.map((other) => {
-    const isActive = other === file;
-    const name = other.replace(".md", "");
-    return `<a href="/${name}" class="${isActive ? "active" : ""}">${name}</a>`;
-  });
+
+  const body = marked(content, { async: false });
+
+  const nav = markdownFiles
+    .map((other) => {
+      const isActive = other === file;
+      const href = other.replace(".md", "");
+      return `<a href="/${href}" class="${isActive ? "active" : ""}">${href}</a>`;
+    })
+    .join("");
 
   const htmlFilePath = file.replace(".md", ".html");
-  const html = `
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${title}</title>
-    <link rel="stylesheet" href="/style.css">
-  </head>
-  <body>
-    <nav>${nav.join("")}</nav>
-    <main>${body}</main>
-  </body>
-`;
+  const htmlFileDir = path.dirname(htmlFilePath);
+  const html = indexHtml
+    .replace("TITLE", title)
+    .replace("BODY", body)
+    .replace("NAV", nav);
 
-  ensureDirSync(`dist/${path.dirname(htmlFilePath)}`);
-  writeFileSync(`dist/${htmlFilePath}`, html);
+  ensureDirSync(`${OUT_DIR}/${htmlFileDir}`);
+  writeFileSync(`${OUT_DIR}/${htmlFilePath}`, html);
 }
 
-copyFileSync("app/style.css", "dist/style.css");
+copyFileSync("app/style.css", `${OUT_DIR}/style.css`);
