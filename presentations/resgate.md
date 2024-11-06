@@ -26,11 +26,11 @@ Slack
 
 ## Example
 
-Topic
+**Topic**
 
 `dev.programming_languages.rust`
 
-Message
+**Message**
 
 ```json
 {
@@ -74,6 +74,7 @@ Here is some cute little ASCII art of Ferris:
 
 - a standard on top of NATS (the RES protocol)
 - topics and messages have a specific format according to the RES protocol
+- handles authentication and access control
 - frontend connection to Resgate is via a websocket
 
 ## Glossary
@@ -83,41 +84,52 @@ Here is some cute little ASCII art of Ferris:
 | model      | a single data object    |
 | collection | a list of models        |
 | resource   | a model or a collection |
+| rid        | a resource identifier   |
 
-## Example
+---
 
-Topic
+# Resgate NATS topics
 
-`get.dev.programming_languages.*` (get collection)
+**Formats**
 
-`get.dev.programming_languages.1` (get model)
+For resource requests:
 
-`access.dev.programming_languages.*` (access handler for collection resource)
+`get.<resourceName>` e.g. `get.dev.programming_languages.language.1`
 
-`event.dev.programming_languages.add` (collection add event)
+For resource access:
 
-`event.dev.programming_languages.1.change` (model change event)
+`access.<resourceName>` e.g. `access.dev.programming_languages.>`
 
-Message (raw data)
+For events:
+
+`event.<resourceName>.<event>` e.g. `event.dev.programming_languages.add`
+
+_resourceName can be anything you want_
+
+---
+
+# Resgate message
+
+Raw data when you request a collection:
 
 ```json
 {
   "id": "1", // Message ID
   "result": {
     "models": {
-      "dev.programming_languages.1": {
+      "dev.programming_languages.language.1": {
         "name": "Rust",
         "mascot": "Ferris the Crab"
       },
-      "dev.programming_languages.2": {
+      "dev.programming_languages.language.2": {
         "name": "Golang",
         "mascot": "Gopher"
       }
     },
     "collections": {
       "dev.programming_languages": [
-        { "rid": "dev.programming_languages.1" },
-        { "rid": "dev.programming_languages.2" }
+        { "rid": "dev.programming_languages.language.1" },
+        { "rid": "dev.programming_languages.language.2" }
       ]
     }
   }
@@ -144,6 +156,15 @@ _The frontend/backend SDKs will help you implement all of these things._
 # What does Resgate solve?
 
 - standardizes the way services communicate
-- access handlers are required for each resource
+- handles access to each resource (required)
+- handles authentication to resources
 - emits updates as they happen in real time
 - polling is no longer needed for frontend updates
+
+---
+
+# Good to know
+
+- we only use it to GET data
+- we don't use it to POST, PUT, DELETE data, we use REST for that
+- Resgate can do this, however but we decided we don't want to, ask Lucas :P
