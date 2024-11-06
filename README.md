@@ -1,3 +1,1 @@
-# Stuff
-
-Behold! My stuff.
+![Behold my stuff meme](https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.redd.it%2Felhbnkzpnya41.jpg&f=1&nofb=1&ipt=3e051ba0032e2aa51d6476b5b7d7eda257a489317052fdbd691d8fa48bb2bf8a&ipo=images)
