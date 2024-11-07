@@ -1,3 +1,9 @@
+---
+# Light theme:
+# theme: https://raw.githubusercontent.com/charmbracelet/glamour/refs/heads/master/styles/light.json
+# start alacritty with `alacritty -o 'colors.primary.background="#ffffff"'`
+---
+
 ```
 ~~~cowsay -f dragon-and-cow
 Snacktech time!
@@ -244,7 +250,114 @@ The RID is a unique identifier for a resource
 
 ---
 
+# Resgate client
+
+1. connecting
+2. authentication
+3. getting data
+4. listening to events
+
+---
+
+# Connecting
+
+```javascript
+import { ResClient } from "@spindle/resclient";
+
+const client = new ResClient("<ws-url-to-resgate-service>");
+```
+
+---
+
+# Authentication
+
+```javascript
+import { ResClient } from "@spindle/resclient";
+
+const client = new ResClient("<ws-url-to-resgate-service>");
+
+// Authenticate
+
+const token = await getApiTokenFromVoipgrid();
+
+await client.authenticate("usertoken", "login", { token });
+```
+
+---
+
+# Getting data
+
+```javascript
+import { ResClient } from "@spindle/resclient";
+
+const client = new ResClient("<ws-url-to-resgate-service>");
+
+// Authenticate
+
+const token = await getApiTokenFromVoipgrid();
+
+await client.authenticate("usertoken", "login", { token });
+
+// Get data
+
+const clientUuid = getClientUuid();
+
+const collection = client.get(`dashboard.client.${clientUuid}`);
+```
+
+---
+
+# Listening to events
+
+```javascript
+import { ResClient } from "@spindle/resclient";
+
+const client = new ResClient("<ws-url-to-resgate-service>");
+
+// Authenticate
+
+const token = await getApiTokenFromVoipgrid();
+
+await client.authenticate("usertoken", "login", { token });
+
+// Get data
+
+const clientUuid = getClientUuid();
+
+const collection = client.get(`dashboard.client.${clientUuid}`);
+
+// Collection events
+
+collection.on("add", ({ value, idx }) => {
+  console.log("Added", value, "at index", idx);
+});
+
+collection.on("remove", ({ idx }) => {
+  console.log("Removed item at index", idx);
+});
+
+// Model events
+
+for (const model of collection) {
+  model.on("change", (oldValues, updatedModel) => {
+    console.log("Model changed", oldValues, updatedModel);
+  });
+}
+
+// Be sure to remove event listeners to prevent memory leaks ;)
+```
+
+---
+
 # Checkout
 
 - you can always come to me if you have any questions
 - checkout the Resgate docs for an introduction [Resgate](https://resgate.io/)
+
+```
+~~~cowsay -f stegosaurus
+Questions?
+~~~
+```
+
+---
