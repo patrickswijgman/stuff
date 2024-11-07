@@ -1,5 +1,3 @@
-# Resgate
-
 ```
 ~~~cowsay -f dragon-and-cow
 Snacktech time!
@@ -8,10 +6,27 @@ Snacktech time!
 
 ---
 
+# Resgate
+
+**Getting the latest data - and changes - in real time**
+
+---
+
+# Topics
+
+1. NATS
+2. Resgate general info
+3. Resgate deepdive
+4. Resgate client
+
+_From a frontend perspective_
+
+---
+
 # NATS
 
-- a messaging system between services
-- publish/subscribe model
+- a messaging system between services in real time
+- publish/subscribe architecture
 - subscribe to any topic and publish messages on it
 - topics can have any name and messages can have any format
 - very flexible
@@ -24,7 +39,11 @@ Slack
 - message -> message
 - users join a channel they are interested in and can read and send messages
 
-## Example
+_NATS is like Slack but for services instead of users_
+
+---
+
+# NATS Example
 
 **Topic**
 
@@ -34,7 +53,7 @@ Slack
 
 ```json
 {
-  "title": "Greeting!",
+  "title": "Greetings!",
   "message": "Welcome to Rust! My name is Ferris the Crab."
 }
 ```
@@ -58,85 +77,12 @@ Here is some cute little ASCII art of Ferris:
 ~~~
 ```
 
-## Example
-
-```
-~~~graph-easy --as=boxart
-[ Admin ] - create new user -> [ VoIPGRID ]
-[ VoIPGRID ] - event.user.add -> [ UserProfiles ]
-[ UserProfiles ] - store user data -> [ Database ]
-~~~
-```
-
 ---
 
 # What is Resgate?
 
 - a standard on top of NATS (the RES protocol)
 - topics and messages have a specific format according to the RES protocol
-- handles authentication and access control
-- frontend connection to Resgate is via a websocket
-
-## Glossary
-
-| Term       | Description             |
-| ---------- | ----------------------- |
-| model      | a single data object    |
-| collection | a list of models        |
-| resource   | a model or a collection |
-| rid        | a resource identifier   |
-
----
-
-# Resgate NATS topics
-
-**Formats**
-
-For resource requests:
-
-`get.<resourceName>` e.g. `get.dev.programming_languages.language.1`
-
-For resource access:
-
-`access.<resourceName>` e.g. `access.dev.programming_languages.>`
-
-For events:
-
-`event.<resourceName>.<event>` e.g. `event.dev.programming_languages.add`
-
-_resourceName can be anything you want_
-
----
-
-# Resgate message
-
-Raw data when you request a collection:
-
-```json
-{
-  "id": "1", // Message ID
-  "result": {
-    "models": {
-      "dev.programming_languages.language.1": {
-        "name": "Rust",
-        "mascot": "Ferris the Crab"
-      },
-      "dev.programming_languages.language.2": {
-        "name": "Golang",
-        "mascot": "Gopher"
-      }
-    },
-    "collections": {
-      "dev.programming_languages": [
-        { "rid": "dev.programming_languages.language.1" },
-        { "rid": "dev.programming_languages.language.2" }
-      ]
-    }
-  }
-}
-```
-
-_The frontend/backend SDKs will help you implement all of these things._
 
 ---
 
@@ -146,25 +92,159 @@ _The frontend/backend SDKs will help you implement all of these things._
 ~~~graph-easy --as=boxart
 [ Frontend ] - websocket -> [ Resgate ]
 [ Resgate ] - connection -> [ NATS ]
-[ VoIPGRID ] - Plain NATS -> [ NATS ]
-[ Holodeck service ] - Resgate SDK -> [ NATS ]
+[ VoIPGRID ] - connection -> [ NATS ]
+[ Holodeck service ] - connection -> [ NATS ]
 ~~~
 ```
 
 ---
 
-# What does Resgate solve?
+# Why Resgate?
 
-- standardizes the way services communicate
-- handles access to each resource (required)
-- handles authentication to resources
-- emits updates as they happen in real time
-- polling is no longer needed for frontend updates
+Resgate removes pain points for all of us
+
+## User
+
+- data is synchronized for all users in real time
+
+## Frontend developer
+
+- no need to implement polling mechanisms
+- no need to implement caching mechanisms
+- no need to implement reconnection strategies
+
+## Backend developer
+
+- a standard way to implement services
+- a way to implement endpoints
+- a way to handle auth
+- a way to handle access
 
 ---
 
-# Good to know
+# Good to know on how we use Resgate
 
-- we only use it to GET data
+- we use it to GET data in real time
 - we don't use it to POST, PUT, DELETE data, we use REST for that
-- Resgate can do this, however but we decided we don't want to, ask Lucas :P
+
+---
+
+# Resgate deepdive
+
+1. resources
+2. topics
+3. rid (resource id)
+
+_Taking Dashboard Data service (queues) as an example_
+
+---
+
+# Resources
+
+Resgate knows a couple of data structures called 'resources'
+
+## Model
+
+A single data object
+
+## Collection
+
+A list of models
+
+---
+
+# Topics
+
+Topics are a way to access resources and listen to events when you subscribe to them.
+
+1. resource topics
+2. access topics
+3. event topics
+4. auth topics
+
+_The Resgate SDKs will help you implement all of this_
+
+---
+
+# Resource topics
+
+Subscribe to these topics to get the latest data
+
+## Format
+
+`get.<resourceName>`
+
+## Examples
+
+- `get.dashboard.client.*` (collection)
+- `get.dashboard.client.*.queue.*` (model)
+
+---
+
+# Access topics
+
+These are required for the corresponding resource topic
+
+_Here you can use the VoIPGRID user's permissions_
+
+## Format
+
+`access.<resourceName>`
+
+## Examples
+
+- `access.dashboard.client.*` (collection)
+- `access.*.client.*` (from Auth service)
+
+---
+
+# Event topics
+
+These are used to listen to changes in the data
+
+## Format
+
+`event.<resourceName>.<event>`
+
+## Examples
+
+- `event.dashboard.client.*.add` (collection add event)
+- `event.dashboard.client.*.remove` (collection remove event)
+- `event.dashboard.client.*.queue.*.change` (model change event)
+
+---
+
+# Authentication topics
+
+These are used to authenticate users
+
+_This is where we use the VoIPGRID user's API token_
+
+## Format
+
+`auth.<resourceName>.<method>`
+
+## Examples
+
+- `auth.usertoken.login` (from Auth service)
+
+---
+
+# RID (Resource ID)
+
+The RID is a unique identifier for a resource
+
+## Format
+
+`<resourceName>.<resourceId>`
+
+## Examples
+
+- `dashboard.client.<client-uuid>.queue.<queue-id>`
+
+---
+
+# Checkout
+
+- you can always come to me if you have any questions
+- checkout the Resgate docs for an introduction [Resgate](https://resgate.io/)
