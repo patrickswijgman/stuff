@@ -278,12 +278,6 @@ const client = new ResClient("<ws-url-to-resgate-service>");
 # Authentication
 
 ```javascript
-import { ResClient } from "@spindle/resclient";
-
-const client = new ResClient("<ws-url-to-resgate-service>");
-
-// Authenticate
-
 const token = await getApiTokenFromVoipgrid();
 
 await client.authenticate("usertoken", "login", { token });
@@ -294,18 +288,6 @@ await client.authenticate("usertoken", "login", { token });
 # Getting data
 
 ```javascript
-import { ResClient } from "@spindle/resclient";
-
-const client = new ResClient("<ws-url-to-resgate-service>");
-
-// Authenticate
-
-const token = await getApiTokenFromVoipgrid();
-
-await client.authenticate("usertoken", "login", { token });
-
-// Get data
-
 const clientUuid = getClientUuid();
 
 const collection = client.get(`dashboard.client.${clientUuid}`);
@@ -316,22 +298,6 @@ const collection = client.get(`dashboard.client.${clientUuid}`);
 # Listening to events
 
 ```javascript
-import { ResClient } from "@spindle/resclient";
-
-const client = new ResClient("<ws-url-to-resgate-service>");
-
-// Authenticate
-
-const token = await getApiTokenFromVoipgrid();
-
-await client.authenticate("usertoken", "login", { token });
-
-// Get data
-
-const clientUuid = getClientUuid();
-
-const collection = client.get(`dashboard.client.${clientUuid}`);
-
 // Collection events
 
 collection.on("add", ({ value, idx }) => {
