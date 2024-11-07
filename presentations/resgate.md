@@ -49,7 +49,7 @@ _NATS is like Slack but for services instead of users_
 
 ---
 
-# NATS Example
+# NATS example
 
 **Topic**
 
@@ -343,21 +343,19 @@ for (const model of collection) {
     console.log("Model changed", oldValues, updatedModel);
   });
 }
-
-// Be sure to remove event listeners to prevent memory leaks ;)
 ```
+
+_The SDK only subscribes to resources if there are event listeners_
 
 ---
 
 # Checkout
 
 - you can always come to me if you have any questions
-- checkout the Resgate docs for an introduction [Resgate](https://resgate.io/)
+- checkout the Resgate site for the tutorial -> https://resgate.io/
 
 ```
 ~~~cowsay -f stegosaurus
 Questions?
 ~~~
 ```
-
----
