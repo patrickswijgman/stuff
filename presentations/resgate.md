@@ -1,7 +1,13 @@
----
-# Light theme:
-# theme: https://raw.githubusercontent.com/charmbracelet/glamour/refs/heads/master/styles/light.json
-# start alacritty with `alacritty -o 'colors.primary.background="#ffffff"'`
+# Preface
+
+Light theme, set slides options at the top:
+
+```
+theme: https://raw.githubusercontent.com/charmbracelet/glamour/refs/heads/master/styles/light.json
+```
+
+Start alacritty with (alacritty -o 'colors.primary.background="#ffffff"')
+
 ---
 
 ```
@@ -22,7 +28,7 @@ Snacktech time!
 
 1. NATS
 2. Resgate general info
-3. Resgate deepdive
+3. Resgate deep dive
 4. Resgate client
 
 _From a frontend perspective_
@@ -123,7 +129,7 @@ Resgate removes pain points for all of us
 
 - a standard way to implement services
 - a way to implement endpoints
-- a way to handle auth
+- a way to handle authentication
 - a way to handle access
 
 ---
@@ -135,7 +141,7 @@ Resgate removes pain points for all of us
 
 ---
 
-# Resgate deepdive
+# Resgate deep dive
 
 1. resources
 2. topics
@@ -166,7 +172,7 @@ Topics are a way to access resources and listen to events when you subscribe to 
 1. resource topics
 2. access topics
 3. event topics
-4. auth topics
+4. authentication topics
 
 _The Resgate SDKs will help you implement all of this_
 
@@ -346,6 +352,31 @@ for (const model of collection) {
 ```
 
 _The SDK only subscribes to resources if there are event listeners_
+
+---
+
+# Demo
+
+```
+
+                   ,~.
+                ,-'__ `-,
+               {,-'  `. }              ,')
+              ,( a )   `-.__         ,',')~,
+             <=.) (         `-.__,==' ' ' '}
+               (   )                      /
+                `-'\   ,                  )
+                    |  \        `~.      /
+                    \   `._        \    /
+                     \     `._____,'   /
+                      `-.            ,'
+                         `-.      ,-'
+                            `----'
+                            //_||
+                         __//--'/`
+                       ,--'/`  '
+                          '
+```
 
 ---
 
