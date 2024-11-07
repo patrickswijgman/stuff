@@ -20,8 +20,8 @@ export function copyFile(src: string, dst: string) {
   fs.copyFileSync(src, dst);
 }
 
-export function writeFile(dst: string, data: string) {
+export async function writeFile(dst: string, data: string) {
   const dir = path.dirname(dst);
-  fs.ensureDirSync(dir);
-  fs.writeFile(dst, data);
+  await fs.ensureDir(dir);
+  await fs.writeFile(dst, data);
 }

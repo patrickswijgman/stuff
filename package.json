@@ -1,6 +1,9 @@
 {
   "scripts": {
-    "start": "tsx watch app/main.ts & serve dist -p 8000"
+    "build": "tsx app/main.ts",
+    "watch": "nodemon --ext html,css,ts,md --ignore 'dist/**' --exec 'npm run build'",
+    "serve": "serve dist -p 8000",
+    "start": "npm run watch & npm run serve"
   },
   "dependencies": {
     "fs-extra": "^11.2.0",
@@ -12,6 +15,7 @@
   "devDependencies": {
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^20.17.6",
+    "nodemon": "^3.1.7",
     "serve": "^14.2.4"
   }
 }
